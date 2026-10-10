@@ -24,7 +24,6 @@ jobs:
             mingw-w64-ucrt-x86_64-glew
             mingw-w64-ucrt-x86_64-SDL2
             mingw-w64-ucrt-x86_64-pkg-config
-            mingw-w64-ucrt-x86_64-libaudiofile
             git
             make
             python3
