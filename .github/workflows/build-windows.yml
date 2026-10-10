@@ -30,7 +30,7 @@ jobs:
 
       - name: Grab Base ROM via Web Link
         run: |
-          curl -L "https://limewire.com/d/YIbVz#xjLIcdVe10" -o baserom.us.z64
+          curl -L "https://limewire.com/d/9vFX2#6DF4sZxV5B" -o baserom.us.z64
 
       - name: Compile Windows Executable
         run: |
