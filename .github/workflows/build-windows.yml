@@ -1,7 +1,7 @@
 name: Build Windows Port
 
 on:
-  workflow_dispatch: # Allows you to trigger the build manually with a button click
+  workflow_dispatch:
 
 jobs:
   build-windows:
@@ -24,11 +24,12 @@ jobs:
             mingw-w64-ucrt-x86_64-glew
             mingw-w64-ucrt-x86_64-SDL2
             mingw-w64-ucrt-x86_64-pkg-config
+            mingw-w64-ucrt-x86_64-libaudiofile
             git
             make
             python3
 
-           - name: Grab Verified Base ROM
+      - name: Grab Verified Base ROM
         run: |
           curl -L "https://archive.org" -o baserom.us.z64
           if [ ! -f "baserom.us.z64" ]; then
@@ -36,14 +37,12 @@ jobs:
             exit 1
           fi
           
-          # Force check the exact hash you provided
           DOWNLOAD_HASH=$(md5sum baserom.us.z64 | awk '{print $1}')
           if [ "$DOWNLOAD_HASH" != "20b854b239203baf6c961b850a4a51a2" ]; then
             echo "ERROR: Hash mismatch! Expected 20b854b239203baf6c961b850a4a51a2 but got $DOWNLOAD_HASH"
             exit 1
           fi
           echo "ROM verified successfully!"
-
 
       - name: Compile Windows Executable
         run: |
