@@ -1,0 +1,43 @@
+name: Build Windows Port
+
+on:
+  workflow_dispatch: # Allows you to trigger the build manually with a button click
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: msys2 {0}
+        
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set Up MSYS2 Environment
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-glew
+            mingw-w64-ucrt-x86_64-SDL2
+            mingw-w64-ucrt-x86_64-pkg-config
+            git
+            make
+            python3
+
+      - name: Grab Base ROM via Web Link
+        run: |
+          curl -L "https://limewire.com/d/YIbVz#xjLIcdVe10" -o baserom.us.z64
+
+      - name: Compile Windows Executable
+        run: |
+          make VERSION=us -j$(nproc)
+
+      - name: Upload Finished Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: sm64-windows-binary
+          path: build/us_pc/sm64.us.exe
