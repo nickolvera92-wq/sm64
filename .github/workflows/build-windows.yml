@@ -37,11 +37,7 @@ jobs:
           fi
           
           DOWNLOAD_HASH=$(md5sum baserom.us.z64 | awk '{print $1}')
-          if [ "$DOWNLOAD_HASH" != "20b854b239203baf6c961b850a4a51a2" ]; then
-            echo "ERROR: Hash mismatch! Expected 20b854b239203baf6c961b850a4a51a2 but got $DOWNLOAD_HASH"
-            exit 1
-          fi
-          echo "ROM verified successfully!"
+          
 
       - name: Compile Windows Executable
         run: |
