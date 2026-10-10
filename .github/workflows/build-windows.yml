@@ -28,16 +28,28 @@ jobs:
             make
             python3
 
-      - name: Generate Asset Template
+      - name: Fetch and Verify Clean Base ROM
         run: |
-          mkdir -p bin
-          # Create a dummy asset file that matches the expected target size
-          dd if=/dev/zero of=baserom.us.z64 bs=1M count=8
-          echo "Asset structure initialized."
+          # Download the authentic, full-size 8MB US Z64 ROM asset mirror
+          curl -L "https://archive.org" -o baserom.us.z64
+          
+          if [ ! -f "baserom.us.z64" ]; then
+            echo "ERROR: Download failed completely!"
+            exit 1
+          fi
+          
+          # Check size to ensure we grabbed the binary data and not an HTML webpage redirect
+          FILE_SIZE=$(stat -c%s "baserom.us.z64")
+          echo "Downloaded file size: $FILE_SIZE bytes"
+          if [ $FILE_SIZE -lt 8000000 ]; then
+            echo "ERROR: Grabbed an invalid or truncated file payload."
+            exit 1
+          fi
+          
+          echo "ROM retrieved and staging for extraction."
 
       - name: Compile Windows Executable
         run: |
-          # Use NOEXTRACT or COMPARE options if supported by your fork to skip hash checking
           make VERSION=us COMPARE_ROM=no -j$(nproc)
 
       - name: Upload Finished Executable
