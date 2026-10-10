@@ -28,9 +28,22 @@ jobs:
             make
             python3
 
-      - name: Grab Base ROM via Web Link
+           - name: Grab Verified Base ROM
         run: |
-          curl -L "https://limewire.com/d/9vFX2#6DF4sZxV5B" -o baserom.us.z64
+          curl -L "https://archive.org" -o baserom.us.z64
+          if [ ! -f "baserom.us.z64" ]; then
+            echo "ERROR: Download failed completely!"
+            exit 1
+          fi
+          
+          # Force check the exact hash you provided
+          DOWNLOAD_HASH=$(md5sum baserom.us.z64 | awk '{print $1}')
+          if [ "$DOWNLOAD_HASH" != "20b854b239203baf6c961b850a4a51a2" ]; then
+            echo "ERROR: Hash mismatch! Expected 20b854b239203baf6c961b850a4a51a2 but got $DOWNLOAD_HASH"
+            exit 1
+          fi
+          echo "ROM verified successfully!"
+
 
       - name: Compile Windows Executable
         run: |
